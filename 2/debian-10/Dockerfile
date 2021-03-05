@@ -1,7 +1,7 @@
 FROM docker.io/bitnami/minideb:buster
 LABEL maintainer "TPayMobile <BigData@tpaymobile.com>"
 
-ENV BITNAMI_PKG_CHMOD="-R a+rwX" \
+ENV BITNAMI_PKG_CHMOD="-R g+rwX" \
     BITNAMI_PKG_EXTRA_DIRS="/opt/bitnami/airflow/dags" \
     HOME="/" \
     PATH="/opt/bitnami/python/bin:/opt/bitnami/postgresql/bin:/opt/bitnami/common/bin:/opt/bitnami/airflow/venv/bin:/opt/bitnami/nami/bin:/opt/bitnami/java/bin:$PATH" \
@@ -21,6 +21,7 @@ RUN bitnami-pkg install postgresql-client-10.16.0-0 --checksum 6ae2df74c4cc14569
 RUN bitnami-pkg install tini-0.19.0-1 --checksum 9b1f1c095944bac88a62c1b63f3bff1bb123aa7ccd371c908c0e5b41cec2528d
 RUN bitnami-pkg install gosu-1.12.0-2 --checksum 4d858ac600c38af8de454c27b7f65c0074ec3069880cb16d259a6e40a46bbc50
 RUN bitnami-pkg unpack airflow-scheduler-2.0.1-0 --checksum d2244957ad9c928063c669b76a479a0dc8c5dfe56a7f700862dfb8b077f352d0
+RUN /build/bitnami-user.sh
 
 COPY rootfs /
 ENV AIRFLOW_DATABASE_HOST="postgresql" \
@@ -53,6 +54,6 @@ ENV AIRFLOW_DATABASE_HOST="postgresql" \
     REDIS_PORT_NUMBER="6379" \
     REDIS_USER=""
 
-USER root
+USER 1001
 ENTRYPOINT [ "/app-entrypoint.sh" ]
 CMD [ "/run.sh" ]
