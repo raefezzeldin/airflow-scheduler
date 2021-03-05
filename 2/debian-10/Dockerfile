@@ -54,6 +54,17 @@ ENV AIRFLOW_DATABASE_HOST="postgresql" \
     REDIS_PORT_NUMBER="6379" \
     REDIS_USER=""
 
-USER 1001
+RUN apt-get update && \
+    apt-get -y install sudo
+
+RUN adduser --disabled-password --gecos '' tpaybigdata \
+    && adduser tpaybigdata sudo \
+    && echo '%sudo ALL=(ALL:ALL) ALL' >> /etc/sudoers
+
+USER tpaybigdata
+
+RUN mkdir -p /opt/bitnami/airflow/dags/git-airflow-dev-dagbag/TalendJobs
+WORKDIR /opt/bitnami/airflow/dags/git-airflow-dev-dagbag/TalendJobs
+
 ENTRYPOINT [ "/app-entrypoint.sh" ]
 CMD [ "/run.sh" ]
